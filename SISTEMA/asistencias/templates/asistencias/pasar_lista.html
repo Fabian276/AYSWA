@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Pasar lista</title>
+</head>
+<body>
+  <h1>Pasar lista - Grupo {{ grupo.clave }}</h1>
+
+  <p><a href="{% url 'asistencias:home' %}">← Volver a grupos</a> | <a href="/admin/">Admin</a></p>
+
+  <h2>1) Crear / abrir sesión</h2>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="accion" value="abrir_sesion">
+
+    <label>Asignación (materia + docente):</label>
+    <select name="asignacion_id" required>
+      {% for a in asignaciones %}
+        <option value="{{ a.id }}">{{ a.materia.nombre }} — {{ a.docente.nombre }}</option>
+      {% empty %}
+        <option value="">No hay asignaciones. Crea en /admin (Asignacion).</option>
+      {% endfor %}
+    </select>
+
+    <label>Fecha:</label>
+    <input type="date" name="fecha" value="{{ hoy }}" required>
+
+    <label>Bloque (1..6):</label>
+    <input type="number" name="bloque" min="1" max="6" required>
+
+    <button type="submit">Abrir sesión</button>
+  </form>
+
+  <h2>2) Últimas sesiones</h2>
+  <ul>
+    {% for s in ultimas_sesiones %}
+      <li>
+        <a href="?sesion={{ s.id }}">
+          {{ s.fecha }} | Bloque {{ s.bloque }} |
+          {{ s.asignacion.materia.nombre }} — {{ s.asignacion.docente.nombre }}
+        </a>
+      </li>
+    {% empty %}
+      <li>No hay sesiones aún.</li>
+    {% endfor %}
+  </ul>
+
+  {% if sesion %}
+    <hr>
+    <h2>3) Lista ({{ sesion.fecha }} | Bloque {{ sesion.bloque }} | {{ sesion.asignacion.materia.nombre }} — {{ sesion.asignacion.docente.nombre }})</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="accion" value="guardar">
+
+      <table border="1" cellpadding="6">
+        <tr>
+          <th>Alumno</th>
+          <th>Estado</th>
+          <th>Comentario</th>
+        </tr>
+
+        {% for x in asistencias %}
+          <tr>
+            <td>{{ x.alumno.nombre }} ({{ x.alumno.matricula }})</td>
+            <td>
+              <select name="estado_{{ x.id }}">
+                {% for code, label in estados %}
+                  <option value="{{ code }}" {% if x.estado == code %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td>
+              <input type="text" name="comentario_{{ x.id }}" value="{{ x.comentario }}">
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+
+      <button type="submit">Guardar</button>
+    </form>
+  {% endif %}
+</body>
+</html>

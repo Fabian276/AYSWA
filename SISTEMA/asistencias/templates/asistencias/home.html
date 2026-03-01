@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Control de Asistencias</title>
+</head>
+<body>
+  <h1>Grupos escolares</h1>
+
+  <ul>
+    {% for g in grupos %}
+      <li>
+        <strong>{{ g.clave }}</strong>
+        {% if g.nombre %}- {{ g.nombre }}{% endif %}
+        | <a href="{% url 'asistencias:pasar_lista' g.id %}">Pasar lista</a>
+      </li>
+    {% empty %}
+      <li>No hay grupos. Crea uno en /admin.</li>
+    {% endfor %}
+  </ul>
+
+  <p><a href="/admin/">Ir al admin</a></p>
+</body>
+</html>
