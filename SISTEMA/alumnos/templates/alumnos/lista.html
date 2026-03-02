@@ -1,0 +1,49 @@
+{% extends 'alumnos/base.html' %}
+
+{% block content %}
+
+<div class="card p-4 shadow">
+
+    <h1 class="mb-4">Materias</h1>
+
+    <a href="/agregar/" class="btn btn-pink mb-3">➕ Agregar Materia</a>
+
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Créditos</th>
+                <th>Horario</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for m in materias %}
+            <tr>
+                <td>{{ m.nombre }}</td>
+                <td>{{ m.creditos }}</td>
+                <td>{{ m.horario }}</td>
+
+                <td class="text-center">
+
+                    <!-- BOTÓN EDITAR -->
+                    <a href="/editar/{{ m.id }}/" class="btn btn-soft btn-sm">
+                        ✏️ Editar
+                    </a>
+
+                    <!-- BOTÓN ELIMINAR -->
+                    <a href="/eliminar/{{ m.id }}/" class="btn btn-danger btn-sm">
+                        🗑 Eliminar
+                    </a>
+
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}
